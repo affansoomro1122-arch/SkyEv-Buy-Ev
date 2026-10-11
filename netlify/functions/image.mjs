@@ -36,7 +36,8 @@ export default async (req) => {
     if (buf.byteLength > 4 * 1024 * 1024) return json({ error: "Image is too large (max 4 MB)." }, 413);
     const id = crypto.randomUUID();
     await store.set("img-" + id, buf, { metadata: { type } });
-    return json({ url: "/.netlify/functions/image?id=" + id });
+    const viaApi = new URL(req.url).pathname.startsWith("/api/");
+    return json({ url: (viaApi ? "/api/image/" : "/.netlify/functions/image?id=") + id });
   }
 
   return json({ error: "Method not allowed." }, 405);
