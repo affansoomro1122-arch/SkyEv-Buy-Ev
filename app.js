@@ -2,7 +2,8 @@
 (function () {
   "use strict";
 
-  var API = "/api/products"; // served by netlify/functions/products.mjs (shared for every visitor)
+  var API = "/.netlify/functions/products"; // netlify/functions/products.mjs (shared for every visitor)
+  var NO_FN = "Server functions not found (404). Deploy the site with its netlify/functions folder using GitHub or Netlify CLI (not drag-and-drop).";
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
   var LOGO = CDN + "/2026/05/05021313/MERGED-skyevlogo-removebg-preview-1.png";
@@ -132,7 +133,7 @@
             return { ok: r.ok, d: d };
           },
           function () {
-            return { ok: false, d: { error: "Server error (" + r.status + ")." } };
+            return { ok: false, d: { error: r.status === 404 ? NO_FN : "Server error (" + r.status + ")." } };
           },
         );
       })
@@ -157,15 +158,20 @@
     return call("PUT", list);
   }
   function uploadImage(blob) {
-    return fetch("/api/image", {
+    return fetch("/.netlify/functions/image", {
       method: "POST",
       headers: { "content-type": blob.type, "x-admin-pin": pin() },
       body: blob,
     }).then(function (r) {
-      return r.json().then(function (d) {
-        if (!r.ok) throw new Error(d.error || "Upload failed.");
-        return d.url;
-      });
+      return r.json().then(
+        function (d) {
+          if (!r.ok) throw new Error(d.error || "Upload failed.");
+          return d.url;
+        },
+        function () {
+          throw new Error(r.status === 404 ? NO_FN : "Upload failed (" + r.status + ").");
+        },
+      );
     });
   }
 
