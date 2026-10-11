@@ -142,6 +142,7 @@
       });
   }
   function login(p) {
+    p = String(p || "").trim();
     try {
       sessionStorage.setItem("skyPin", p);
     } catch (e) {}
