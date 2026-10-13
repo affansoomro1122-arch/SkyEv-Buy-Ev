@@ -774,8 +774,6 @@ footer .logo img {
   background: #d9dbde;
   border: 1px solid var(--teal);
   overflow: hidden;
-    position: sticky;
-    top: 80px;
 }
 .gal-main img {
   width: 100%;
