@@ -76,10 +76,10 @@
     '</div></div>' +
     '<div class="related" id="rel"></div>';
 
-  /* ---------- slider: auto-advances every 2 s, arrows, swipe, thumbnails ---------- */
+  /* ---------- slider: auto-advances every 5 s, arrows, swipe, thumbnails ---------- */
   var th = document.getElementById('th'), track = document.getElementById('track'),
       gmain = document.getElementById('gmain'), slides = [].slice.call(track.children),
-      cur = 0, timer = null, held = false, stopped = false, DELAY = 2000;
+      cur = 0, timer = null, held = false, stopped = false, DELAY = 5000;
 
   function setVideoSlide(i, on) {            // render the video only while visible, so it stops when you leave it
     var m = media[i]; if (m.t !== 'v') return;
