@@ -181,6 +181,51 @@
     });
   }
 
+  var MAX_VIDEO = 4 * 1024 * 1024; // Netlify functions accept ~6 MB per request
+  function uploadVideo(file) {
+    if (!file) return Promise.reject(new Error("No video selected."));
+    if (file.type !== "video/mp4" && file.type !== "video/webm") {
+      return Promise.reject(new Error("Only MP4 or WebM videos."));
+    }
+    if (file.size > MAX_VIDEO) {
+      return Promise.reject(new Error("Video is too large (max 4 MB). Paste a YouTube/Vimeo link for bigger videos."));
+    }
+    return fx("video", {
+      method: "POST",
+      headers: { "content-type": file.type, "x-admin-pin": pin() },
+      body: file,
+    }).then(function (r) {
+      return r.json().then(
+        function (d) {
+          if (!r.ok) throw new Error(d.error || "Video upload failed.");
+          return d.url;
+        },
+        function () {
+          throw new Error(r.status === 404 ? NO_FN : "Video upload failed (" + r.status + ").");
+        },
+      );
+    });
+  }
+
+  /* Turn a video link into something playable: { kind: "iframe"|"file", src } */
+  function videoInfo(u) {
+    u = String(u || "").trim();
+    if (!u) return null;
+    var m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/i);
+    if (m) return { kind: "iframe", src: "https://www.youtube.com/embed/" + m[1] + "?rel=0" };
+    m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+    if (m) return { kind: "iframe", src: "https://player.vimeo.com/video/" + m[1] };
+    return { kind: "file", src: u };
+  }
+  function videoHTML(u, poster) {
+    var v = videoInfo(u);
+    if (!v) return "";
+    if (v.kind === "iframe") {
+      return '<iframe src="' + esc(v.src) + '" title="Product video" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
+    }
+    return '<video src="' + esc(v.src) + '" controls playsinline preload="metadata"' + (poster ? ' poster="' + esc(poster) + '"' : "") + "></video>";
+  }
+
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return {
@@ -316,6 +361,9 @@
     loadAdmin: load,
     login: login,
     uploadImage: uploadImage,
+    uploadVideo: uploadVideo,
+    videoHTML: videoHTML,
+    videoInfo: videoInfo,
     defaults: function () {
       return clone(SEED);
     },
