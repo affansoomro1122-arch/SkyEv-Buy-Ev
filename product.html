@@ -36,6 +36,15 @@
   document.title = p.name + ' | SKY Electric Trucks';
 
   var imgs = (p.images && p.images.length) ? p.images : [''];
+  // Gallery items: the product video (if any) is always first = the main item
+  var media = [];
+  if (p.video && SKY.videoInfo(p.video)) media.push({ t: 'v', src: p.video });
+  imgs.forEach(function (u) { media.push({ t: 'i', src: u }); });
+  function mainHTML(m) {
+    return m.t === 'v'
+      ? SKY.videoHTML(m.src, imgs[0])
+      : '<img id="gm" src="' + E(m.src) + '" alt="' + E(p.name) + '">';
+  }
   var specs = (p.specs || []).map(function (s) {
     return '<tr><td>' + E(s[0]) + '</td><td>' + E(s[1]) + '</td></tr>';
   }).join('');
@@ -45,9 +54,10 @@
   view.innerHTML =
     '<div class="crumbs"><a href="index.html">Home</a> / <a href="products.html">Products</a> / ' + E(p.name) + '</div>' +
     '<div class="detail"><div>' +
-      '<div class="gal-main"><img id="gm" src="' + E(imgs[0]) + '" alt="' + E(p.name) + '"></div>' +
-      (imgs.length > 1 ? '<div class="thumbs" id="th">' + imgs.map(function (s, i) {
-        return '<button type="button" class="' + (i ? '' : 'on') + '" data-i="' + i + '" aria-label="Image ' + (i + 1) + '"><img src="' + E(s) + '" alt=""></button>';
+      '<div class="gal-main' + (media[0].t === 'v' ? ' is-video' : '') + '" id="gmain">' + mainHTML(media[0]) + '</div>' +
+      (media.length > 1 ? '<div class="thumbs" id="th">' + media.map(function (m, i) {
+        return '<button type="button" class="' + (i ? '' : 'on') + (m.t === 'v' ? ' vthumb' : '') + '" data-i="' + i + '" aria-label="' + (m.t === 'v' ? 'Product video' : 'Image ' + (i + 1)) + '">' +
+          (m.t === 'v' ? (imgs[0] ? '<img src="' + E(imgs[0]) + '" alt="">' : '') + '<span class="play"><i class="fa-solid fa-play"></i></span>' : '<img src="' + E(m.src) + '" alt="">') + '</button>';
       }).join('') + '</div>' : '') +
     '</div><div>' +
       '<h1>' + E(p.name) + '</h1>' +
@@ -64,7 +74,9 @@
   var th = document.getElementById('th');
   if (th) th.onclick = function (e) {
     var b = e.target.closest('button'); if (!b) return;
-    document.getElementById('gm').src = imgs[+b.dataset.i];
+    var m = media[+b.dataset.i], g = document.getElementById('gmain');
+    g.innerHTML = mainHTML(m);               // replacing the HTML also stops a playing video
+    g.classList.toggle('is-video', m.t === 'v');
     [].forEach.call(th.children, function (c) { c.classList.toggle('on', c === b); });
   };
 
