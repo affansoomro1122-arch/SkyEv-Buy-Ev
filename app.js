@@ -6,7 +6,7 @@
   var NO_FN = "Server functions not found (404). Deploy the site with its netlify/functions folder using GitHub or Netlify CLI (not drag-and-drop).";
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
-     var LOGO = "/images/logo.png";
+  var LOGO = CDN + "/2026/05/05021313/MERGED-skyevlogo-removebg-preview-1.png";
 
   /* DEFAULT product – shown until the first time you save from the admin page */
   var SEED = [
