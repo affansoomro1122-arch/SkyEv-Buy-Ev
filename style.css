@@ -108,6 +108,7 @@ header.solid {
   padding: 0 12px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 .logo img {
   height: 54px;
@@ -156,7 +157,6 @@ nav li:last-child {
 }
 .burger {
   display: none;
-  margin-left: auto;
   background: none;
   border: 0;
   color: #fff;
@@ -774,6 +774,8 @@ footer .logo img {
   background: #d9dbde;
   border: 1px solid var(--teal);
   overflow: hidden;
+    position: sticky;
+    top: 80px;
 }
 .gal-main img {
   width: 100%;
@@ -1040,46 +1042,24 @@ table.specs td:first-child {
   display: inline-flex;
   align-items: center;
 }
-
-/* ---------- product video in gallery ---------- */
-.gal-main.is-video {
-  background: #000;
-}
-.gal-main video,
-.gal-main iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: #000;
-  object-fit: contain;
-}
-.thumbs button.vthumb {
-  position: relative;
-}
-.thumbs button .play {
-  position: absolute;
-  inset: 0;
+.logoGrid{
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  font-size: 18px;
+  /* justify-content: center; */
 }
-.vprev {
-  margin-top: 10px;
+.logoGrid video{
+  width: 90px;
+  height: auto;
+  object-fit: cover;
 }
-.vprev .vbox {
-  aspect-ratio: 16/9;
-  max-width: 360px;
-  background: #000;
-  border: 1px solid var(--teal);
-  margin-bottom: 8px;
+@media (max-width: 512px) {
+.logoGrid video{
+  width: 60px;
+  
+}.logo img {
+  height: 41px;
 }
-.vprev video,
-.vprev iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
+  
 }
+
+/* 512 */
