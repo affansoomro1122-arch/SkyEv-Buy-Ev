@@ -33,6 +33,12 @@ function clean(list) {
       .map((u) => String(u))
       .filter((u) => /^https?:\/\//i.test(u) || u.startsWith("/.netlify/functions/image?id=") || u.startsWith("/api/image/"))
       .slice(0, 20);
+    // Product video: our own uploaded video (/api/video/<id>) or any http(s) link (mp4/webm, YouTube, Vimeo)
+    const v = String(p.video || "").trim();
+    const video =
+      /^https?:\/\//i.test(v) || v.startsWith("/.netlify/functions/video?id=") || v.startsWith("/api/video/")
+        ? v.slice(0, 500)
+        : "";
     const specs = (Array.isArray(p.specs) ? p.specs : [])
       .filter((s) => Array.isArray(s) && s[0] && s[1])
       .map((s) => [str(s[0], 120), str(s[1], 300)])
@@ -46,6 +52,7 @@ function clean(list) {
       createdAt: num(p.createdAt) || Date.now(),
       description: str(p.description, 20000),
       images,
+      video,
       specs,
     });
   }
