@@ -40,10 +40,10 @@
   var media = [];
   if (p.video && SKY.videoInfo(p.video)) media.push({ t: 'v', src: p.video });
   imgs.forEach(function (u) { media.push({ t: 'i', src: u }); });
-  function slideInner(m) {
+  function mainHTML(m) {
     return m.t === 'v'
       ? SKY.videoHTML(m.src, imgs[0])
-      : '<img src="' + E(m.src) + '" alt="' + E(p.name) + '">';
+      : '<img id="gm" src="' + E(m.src) + '" alt="' + E(p.name) + '">';
   }
   var specs = (p.specs || []).map(function (s) {
     return '<tr><td>' + E(s[0]) + '</td><td>' + E(s[1]) + '</td></tr>';
@@ -54,12 +54,7 @@
   view.innerHTML =
     '<div class="crumbs"><a href="index.html">Home</a> / <a href="products.html">Products</a> / ' + E(p.name) + '</div>' +
     '<div class="detail"><div>' +
-      '<div class="gal-main slider" id="gmain"><div class="track" id="track">' + media.map(function (m, i) {
-        // the video slide is only rendered while it is on screen (see the slider code below)
-        return '<div class="slide' + (m.t === 'v' ? ' v' : '') + '" data-i="' + i + '">' + (m.t === 'v' ? (i === 0 ? slideInner(m) : '') : slideInner(m)) + '</div>';
-      }).join('') + '</div>' +
-      (media.length > 1 ? '<button type="button" class="arr prev" id="aprev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button><button type="button" class="arr next" id="anext" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>' : '') +
-      '</div>' +
+      '<div class="gal-main' + (media[0].t === 'v' ? ' is-video' : '') + '" id="gmain">' + mainHTML(media[0]) + '</div>' +
       (media.length > 1 ? '<div class="thumbs" id="th">' + media.map(function (m, i) {
         return '<button type="button" class="' + (i ? '' : 'on') + (m.t === 'v' ? ' vthumb' : '') + '" data-i="' + i + '" aria-label="' + (m.t === 'v' ? 'Product video' : 'Image ' + (i + 1)) + '">' +
           (m.t === 'v' ? (imgs[0] ? '<img src="' + E(imgs[0]) + '" alt="">' : '') + '<span class="play"><i class="fa-solid fa-play"></i></span>' : '<img src="' + E(m.src) + '" alt="">') + '</button>';
@@ -76,60 +71,14 @@
     '</div></div>' +
     '<div class="related" id="rel"></div>';
 
-  /* ---------- slider: auto-advances every 5 s, arrows, swipe, thumbnails ---------- */
-  var th = document.getElementById('th'), track = document.getElementById('track'),
-      gmain = document.getElementById('gmain'), slides = [].slice.call(track.children),
-      cur = 0, timer = null, held = false, stopped = false, DELAY = 5000;
-
-  function setVideoSlide(i, on) {            // render the video only while visible, so it stops when you leave it
-    var m = media[i]; if (m.t !== 'v') return;
-    slides[i].innerHTML = on ? slideInner(m) : '';
-  }
-  function go(n, manual) {
-    if (media.length < 2) return;
-    n = (n + media.length) % media.length;
-    if (n === cur) return;
-    setVideoSlide(cur, false);
-    cur = n;
-    setVideoSlide(cur, true);
-    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
-    if (th) {
-      [].forEach.call(th.children, function (c, k) { c.classList.toggle('on', k === cur); });
-      var b = th.children[cur];                // keep the active thumbnail in view (horizontal scroll)
-      th.scrollTo({ left: b.offsetLeft - (th.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' });
-    }
-    if (manual) { stopped = false; restart(); }
-  }
-  function tick() { if (!held && !stopped && !document.hidden) go(cur + 1); }
-  function restart() { clearInterval(timer); if (media.length > 1) timer = setInterval(tick, DELAY); }
-
-  if (media.length > 1) {
-    document.getElementById('aprev').onclick = function () { go(cur - 1, true); };
-    document.getElementById('anext').onclick = function () { go(cur + 1, true); };
-    th.onclick = function (e) { var b = e.target.closest('button'); if (b) go(+b.dataset.i, true); };
-
-    // pause while the mouse is over the slider / a finger is on it
-    gmain.addEventListener('mouseenter', function () { held = true; });
-    gmain.addEventListener('mouseleave', function () { held = false; });
-
-    // stop auto-advance once the visitor starts playing the video, so it is never cut off
-    gmain.addEventListener('play', function () { stopped = true; }, true);
-    window.addEventListener('blur', function () {            // click inside a YouTube/Vimeo iframe
-      setTimeout(function () { if (document.activeElement && document.activeElement.tagName === 'IFRAME' && gmain.contains(document.activeElement)) stopped = true; }, 0);
-    });
-
-    // swipe on phones
-    var x0 = null;
-    gmain.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; held = true; }, { passive: true });
-    gmain.addEventListener('touchend', function (e) {
-      held = false;
-      if (x0 === null) return;
-      var dx = e.changedTouches[0].clientX - x0; x0 = null;
-      if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1), true);
-    }, { passive: true });
-
-    restart();
-  }
+  var th = document.getElementById('th');
+  if (th) th.onclick = function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var m = media[+b.dataset.i], g = document.getElementById('gmain');
+    g.innerHTML = mainHTML(m);               // replacing the HTML also stops a playing video
+    g.classList.toggle('is-video', m.t === 'v');
+    [].forEach.call(th.children, function (c) { c.classList.toggle('on', c === b); });
+  };
 
   var others = SKY.newest(all.filter(function (x) { return x.id !== p.id; })).slice(0, 3);
   if (others.length) {
