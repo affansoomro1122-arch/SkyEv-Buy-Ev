@@ -47,6 +47,13 @@
      <p class="hint">Click an image to make it the main image. Uploaded images are resized to max 1000px.</p>
     </div>
 
+    <div class="fld"><label>Product video (optional – shown first in the product gallery)</label>
+     <input id="vfile" type="file" accept="video/mp4,video/webm">
+     <div class="urlrow"><input id="vurl" type="url" placeholder="…or paste a YouTube / Vimeo / .mp4 link"><button class="xbtn" type="button" id="setvurl">Set</button></div>
+     <div class="vprev" id="vprev" hidden></div>
+     <p class="hint">Upload MP4 or WebM up to 4 MB, or paste a link for bigger videos. This video becomes the main item of the gallery.</p>
+    </div>
+
     <div class="fld"><label>Specifications (shown as a list on cards and a table on the detail page)</label>
      <div id="specs"></div>
      <button class="xbtn" type="button" id="addspec" style="margin-top:8px;padding:8px 14px">+ Add spec</button>
@@ -78,7 +85,7 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); }, E = SKY.esc;
-  var list = [], images = [], editing = null, msgT;
+  var list = [], images = [], video = '', editing = null, msgT;
 
   /* ---------- passcode gate (soft protection only – see notes) ---------- */
   function show() {
@@ -142,6 +149,29 @@
     if (d && +d.dataset.i > 0) { images.unshift(images.splice(+d.dataset.i, 1)[0]); drawPrev(); }
   };
 
+  /* ---------- video ---------- */
+  function drawVideo() {
+    var box = $('vprev');
+    if (!video) { box.hidden = true; box.innerHTML = ''; return; }
+    box.hidden = false;
+    box.innerHTML = '<div class="vbox">' + SKY.videoHTML(video, images[0]) + '</div>' +
+      '<button class="xbtn del" type="button" id="vrm">Remove video</button>';
+    $('vrm').onclick = function () { video = ''; drawVideo(); };
+  }
+  $('vfile').onchange = function () {
+    var f = this.files[0], inp = this;
+    if (!f) return;
+    say('Uploading video…');
+    SKY.uploadVideo(f)
+      .then(function (u) { video = u; drawVideo(); inp.value = ''; say('Video uploaded. Click Save Product to publish it.'); })
+      .catch(function (e) { inp.value = ''; say(e && e.message ? e.message : 'Could not upload the video.'); });
+  };
+  $('setvurl').onclick = function () {
+    var u = $('vurl').value.trim();
+    if (!/^https?:\/\//i.test(u)) { say('Enter a valid video link (https://…).'); return; }
+    video = u; $('vurl').value = ''; drawVideo();
+  };
+
   /* ---------- spec rows ---------- */
   function addSpec(k, v) {
     var r = document.createElement('div'); r.className = 'specrow';
@@ -153,8 +183,8 @@
 
   /* ---------- form ---------- */
   function clearForm() {
-    editing = null; images = []; $('pf').reset(); $('specs').innerHTML = ''; addSpec();
-    drawPrev(); $('ftitle').textContent = 'Add New Product'; $('savebtn').textContent = 'Save Product'; $('cancel').hidden = true;
+    editing = null; images = []; video = ''; $('pf').reset(); $('specs').innerHTML = ''; addSpec();
+    drawPrev(); drawVideo(); $('ftitle').textContent = 'Add New Product'; $('savebtn').textContent = 'Save Product'; $('cancel').hidden = true;
   }
   $('cancel').onclick = clearForm;
 
@@ -165,7 +195,7 @@
       return [r.children[0].value.trim(), r.children[1].value.trim()];
     }).filter(function (s) { return s[0] && s[1]; });
 
-    var p = { name: $('name').value.trim(), price: parseFloat($('price').value) || 0, priceNote: $('pnote').value.trim(), booking: parseFloat($('book').value) || 0, description: $('desc').value.trim(), images: images.slice(), specs: specs };
+    var p = { name: $('name').value.trim(), price: parseFloat($('price').value) || 0, priceNote: $('pnote').value.trim(), booking: parseFloat($('book').value) || 0, description: $('desc').value.trim(), images: images.slice(), video: video, specs: specs };
     var prev = list.slice();
     if (editing) {
       var o = list.filter(function (x) { return x.id === editing; })[0];
@@ -202,10 +232,10 @@
     var ed = e.target.getAttribute('data-edit'), dl = e.target.getAttribute('data-del');
     if (ed) {
       var p = list.filter(function (x) { return x.id === ed; })[0]; if (!p) return;
-      editing = ed; images = p.images.slice();
+      editing = ed; images = p.images.slice(); video = p.video || '';
       $('name').value = p.name; $('price').value = p.price; $('pnote').value = p.priceNote || ''; $('book').value = p.booking || ''; $('desc').value = p.description || '';
       $('specs').innerHTML = ''; (p.specs.length ? p.specs : [['', '']]).forEach(function (s) { addSpec(s[0], s[1]); });
-      drawPrev(); $('ftitle').textContent = 'Edit Product'; $('savebtn').textContent = 'Update Product'; $('cancel').hidden = false;
+      drawPrev(); drawVideo(); $('ftitle').textContent = 'Edit Product'; $('savebtn').textContent = 'Update Product'; $('cancel').hidden = false;
       $('pf').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     if (dl && confirm('Delete this product for everyone? This cannot be undone.')) {
