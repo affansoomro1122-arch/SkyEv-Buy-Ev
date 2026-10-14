@@ -11,7 +11,9 @@
   var NO_FN = "Server functions not found (404). Deploy the site with its netlify/functions folder using GitHub or Netlify CLI (not drag-and-drop).";
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
-  var LOGO = CDN + "/2026/05/05021313/MERGED-skyevlogo-removebg-preview-1.png";
+  // SITE LOGO: put your logo file in the /images folder and set its exact file name here.
+  // This one value is used for the header and footer on every page.
+  var LOGO = "/images/logo.png";
 
   /* DEFAULT product – shown until the first time you save from the admin page */
   var SEED = [
@@ -342,8 +344,8 @@
       f.outerHTML =
         '<footer><div class="wrap"><div class="fgrid">' +
         '<div><a class="logo" href="index.html"><img src="' +
-        CDN +
-        '/2026/04/14182745/logo_n-1.jpeg" alt="SKY"></a>' +
+        LOGO +
+        '" alt="SKY"></a>' +
         '<p class="about-t">Specialising in commercial electric vehicles. The SKY brand stands for quality, reliability, and the confidence your business depends on.</p></div>' +
         '<div><h5>Useful Links</h5><ul><li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li><li><a href="products.html">Product</a></li><li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li></ul></div>' +
         '<div><h5>Contact Us</h5><ul><li><a href="tel:+61428796970">+61 428796970</a></li><li><a href="mailto:info@skyev.com.au">info@skyev.com.au</a></li><li>4 Chiltern Rd Ingleside, NSW 2101</li></ul></div>' +
@@ -353,6 +355,10 @@
   }
   document.addEventListener("DOMContentLoaded", function () {
     chrome();
+    // any <img data-logo> (e.g. on index.html) gets the same logo
+    [].forEach.call(document.querySelectorAll("img[data-logo]"), function (im) {
+      im.src = LOGO;
+    });
   });
 
   window.SKY = {
