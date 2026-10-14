@@ -11,7 +11,9 @@
   var NO_FN = "Server functions not found (404). Deploy the site with its netlify/functions folder using GitHub or Netlify CLI (not drag-and-drop).";
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
-  var LOGO = CDN + "/2026/05/05021313/MERGED-skyevlogo-removebg-preview-1.png";
+  // SITE LOGO: put your logo file in the /images folder and set its exact file name here.
+  // This one value is used for the header and footer on every page.
+  var LOGO = "/images/logo.png";
 
   /* DEFAULT product – shown until the first time you save from the admin page */
   var SEED = [
@@ -163,33 +165,6 @@
   function save(list) {
     return call("PUT", list);
   }
-  /* Recognise a video link: YouTube, Vimeo, or a direct video file (e.g. .mp4 / uploaded file) */
-  function parseVideo(u) {
-    u = String(u || "").trim();
-    if (!/^https?:\/\//i.test(u) && (u.charAt(0) !== "/" || u.charAt(1) === "/")) return null;
-    var m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/i);
-    if (m) return { kind: "youtube", id: m[1], thumb: "https://img.youtube.com/vi/" + m[1] + "/hqdefault.jpg" };
-    m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
-    if (m) return { kind: "vimeo", id: m[1], thumb: "https://vumbnail.com/" + m[1] + ".jpg" };
-    return { kind: "file" };
-  }
-  function uploadVideo(file) {
-    return fx("video", {
-      method: "POST",
-      headers: { "content-type": file.type, "x-admin-pin": pin() },
-      body: file,
-    }).then(function (r) {
-      return r.json().then(
-        function (d) {
-          if (!r.ok) throw new Error(d.error || "Upload failed.");
-          return d.url;
-        },
-        function () {
-          throw new Error(r.status === 404 ? NO_FN : "Upload failed (" + r.status + ").");
-        },
-      );
-    });
-  }
   function uploadImage(blob) {
     return fx("image", {
       method: "POST",
@@ -206,6 +181,51 @@
         },
       );
     });
+  }
+
+  var MAX_VIDEO = 4 * 1024 * 1024; // Netlify functions accept ~6 MB per request
+  function uploadVideo(file) {
+    if (!file) return Promise.reject(new Error("No video selected."));
+    if (file.type !== "video/mp4" && file.type !== "video/webm") {
+      return Promise.reject(new Error("Only MP4 or WebM videos."));
+    }
+    if (file.size > MAX_VIDEO) {
+      return Promise.reject(new Error("Video is too large (max 4 MB). Paste a YouTube/Vimeo link for bigger videos."));
+    }
+    return fx("video", {
+      method: "POST",
+      headers: { "content-type": file.type, "x-admin-pin": pin() },
+      body: file,
+    }).then(function (r) {
+      return r.json().then(
+        function (d) {
+          if (!r.ok) throw new Error(d.error || "Video upload failed.");
+          return d.url;
+        },
+        function () {
+          throw new Error(r.status === 404 ? NO_FN : "Video upload failed (" + r.status + ").");
+        },
+      );
+    });
+  }
+
+  /* Turn a video link into something playable: { kind: "iframe"|"file", src } */
+  function videoInfo(u) {
+    u = String(u || "").trim();
+    if (!u) return null;
+    var m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/i);
+    if (m) return { kind: "iframe", src: "https://www.youtube.com/embed/" + m[1] + "?rel=0" };
+    m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+    if (m) return { kind: "iframe", src: "https://player.vimeo.com/video/" + m[1] };
+    return { kind: "file", src: u };
+  }
+  function videoHTML(u, poster) {
+    var v = videoInfo(u);
+    if (!v) return "";
+    if (v.kind === "iframe") {
+      return '<iframe src="' + esc(v.src) + '" title="Product video" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
+    }
+    return '<video src="' + esc(v.src) + '" controls playsinline preload="metadata"' + (poster ? ' poster="' + esc(poster) + '"' : "") + "></video>";
   }
 
   function esc(s) {
@@ -324,8 +344,8 @@
       f.outerHTML =
         '<footer><div class="wrap"><div class="fgrid">' +
         '<div><a class="logo" href="index.html"><img src="' +
-        CDN +
-        '/2026/04/14182745/logo_n-1.jpeg" alt="SKY"></a>' +
+        LOGO +
+        '" alt="SKY"></a>' +
         '<p class="about-t">Specialising in commercial electric vehicles. The SKY brand stands for quality, reliability, and the confidence your business depends on.</p></div>' +
         '<div><h5>Useful Links</h5><ul><li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li><li><a href="products.html">Product</a></li><li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li></ul></div>' +
         '<div><h5>Contact Us</h5><ul><li><a href="tel:+61428796970">+61 428796970</a></li><li><a href="mailto:info@skyev.com.au">info@skyev.com.au</a></li><li>4 Chiltern Rd Ingleside, NSW 2101</li></ul></div>' +
@@ -335,6 +355,10 @@
   }
   document.addEventListener("DOMContentLoaded", function () {
     chrome();
+    // any <img data-logo> (e.g. on index.html) gets the same logo
+    [].forEach.call(document.querySelectorAll("img[data-logo]"), function (im) {
+      im.src = LOGO;
+    });
   });
 
   window.SKY = {
@@ -344,7 +368,8 @@
     login: login,
     uploadImage: uploadImage,
     uploadVideo: uploadVideo,
-    parseVideo: parseVideo,
+    videoHTML: videoHTML,
+    videoInfo: videoInfo,
     defaults: function () {
       return clone(SEED);
     },
