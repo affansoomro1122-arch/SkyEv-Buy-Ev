@@ -13,7 +13,8 @@
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
   // SITE LOGO: put your logo file in the /images folder and set its exact file name here.
   // This one value is used for the header and footer on every page.
-  var LOGO = "/images/logo.png";
+var LOGO = "/images/logo.png";
+var LOGO_VIDEO = "/images/logoVideo.webm";
 
   /* DEFAULT product – shown until the first time you save from the admin page */
   var SEED = [
@@ -322,18 +323,14 @@
     var h = document.getElementById("site-header");
     if (h) {
       h.outerHTML =
-        '<header class="solid"><div class="hwrap"><a class="logo" href="index.html"><img src="' +
-        LOGO +
-        '" alt="SKY"></a>' +
-        '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
-        '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
-        "<li><a " +
-        (inProducts ? 'class="on" ' : "") +
-        'href="products.html">Products</a></li>' +
-        '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
-        '<li><a class="cart" href="#" aria-label="Cart">' +
-        cartSvg +
-        "<b>0</b></a></li></ul></nav></div></header>";
+  '<header class="solid"><div class="hwrap">' +
+  '<div class="logoGrid"><video loop autoplay muted playsinline><source src="' + LOGO_VIDEO + '"></video></div>' +
+  '<a class="logo" href="index.html"><img src="' + LOGO + '" alt="SKY"></a>' +
+  '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
+  '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
+  "<li><a " + (inProducts ? 'class="on" ' : "") + 'href="products.html">Products</a></li>' +
+  '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
+  '<li><a class="cart" href="#" aria-label="Cart">' + cartSvg + "<b>0</b></a></li></ul></nav></div></header>";
       var nv = document.getElementById("nv");
       document.getElementById("bg").onclick = function () {
         nv.classList.toggle("open");
