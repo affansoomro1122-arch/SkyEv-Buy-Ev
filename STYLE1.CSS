@@ -133,9 +133,6 @@
       nav li:last-child {
         margin-left: 92px;
       }
-      header.solid .logo img{
-        height: 58.67px;
-      }
       .cart {
         display: flex;
         position: relative;
