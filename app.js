@@ -324,8 +324,8 @@ var LOGO_VIDEO = "/images/logoVideo.webm";
     if (h) {
       h.outerHTML =
   '<header class="solid"><div class="hwrap">' +
-  '<div class="logoGrid"><video loop autoplay muted playsinline><source src="' + LOGO_VIDEO + '"></video></div>' +
-  '<a class="logo" href="index.html"><img src="' + LOGO + '" alt="SKY"></a>' +
+  '<a href="/" class="logoGrid"><video loop autoplay muted playsinline><source src="' + LOGO_VIDEO + '"></video></a>' +
+  '<a class="logo" href="/"><img src="' + LOGO + '" alt="SKY"></a>' +
   '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
   '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
   "<li><a " + (inProducts ? 'class="on" ' : "") + 'href="products.html">Products</a></li>' +
