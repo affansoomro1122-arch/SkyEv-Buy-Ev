@@ -156,7 +156,7 @@ nav li:last-child {
 }
 .burger {
   display: none;
-  margin-left: auto;
+  /* margin-left: auto; */
   background: none;
   border: 0;
   color: #fff;
