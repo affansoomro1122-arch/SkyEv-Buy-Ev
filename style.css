@@ -1167,3 +1167,23 @@ table.specs td:first-child {
   background: var(--teal);
   border-radius: 3px;
 }
+
+.logoGrid{
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+.logoGrid video{
+  width: 90px;
+  height: auto;
+  object-fit: cover;
+}
+@media (max-width: 512px) {
+.logoGrid video{
+  width: 60px;
+  
+}.logo img {
+  height: 41px;
+}
+  
+}
