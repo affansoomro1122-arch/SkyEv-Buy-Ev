@@ -109,10 +109,6 @@
         display: flex;
         align-items: center;
       }
-      .logo img {
-        height: 76.67px;
-        width: auto;
-      }
       nav {
         margin-left: auto;
         display: flex;
@@ -159,7 +155,7 @@
       }
       .burger {
         display: none;
-        margin-left: auto;
+        /* margin-left: auto; */
         background: none;
         border: 0;
         color: #fff;
