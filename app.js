@@ -14,7 +14,7 @@
   // SITE LOGO: put your logo file in the /images folder and set its exact file name here.
   // This one value is used for the header and footer on every page.
 var LOGO = "/images/logo.png";
-var LOGO_VIDEO = "/images/new-white.webm";
+var LOGO_VIDEO = "/images/newLogo.webm";
 
   /* DEFAULT product – shown until the first time you save from the admin page */
   var SEED = [
