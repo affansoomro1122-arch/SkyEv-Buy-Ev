@@ -693,6 +693,7 @@ footer .logo img {
   }
   #homeProducts .row {
     display: flex;
+    gap: 12px 12px;
   }
   .card .body {
     padding: 16px 8px 20px;
