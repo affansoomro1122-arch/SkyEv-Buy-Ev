@@ -692,7 +692,7 @@ footer .logo img {
     grid-template-columns: 1fr;
   }
   #homeProducts .row {
-    grid-template-columns: fr;
+    display: flex;
   }
   .card .body {
     padding: 16px 8px 20px;
