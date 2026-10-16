@@ -340,7 +340,7 @@ var LOGO_VIDEO = "/images/newLogo.webm";
     if (f) {
       f.outerHTML =
         '<footer><div class="wrap"><div class="fgrid">' +
-        '<div><a class="logo" href="index.html"><img src="' +
+        '<div><a class="logo" href="/"><img src="' +
         LOGO +
         '" alt="SKY"></a>' +
         '<p class="about-t">Specialising in commercial electric vehicles. The SKY brand stands for quality, reliability, and the confidence your business depends on.</p></div>' +
