@@ -691,6 +691,12 @@ footer .logo img {
   .row {
     grid-template-columns: 1fr;
   }
+  #homeProducts .row {
+    grid-template-columns: fr;
+  }
+  .card .body {
+    padding: 16px 8px 20px;
+}
 }
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -1188,3 +1194,7 @@ table.specs td:first-child {
 }
   
 }
+
+
+#homeProducts .row{
+  
