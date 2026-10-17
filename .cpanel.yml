@@ -1,4 +1,4 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=public_html/edeliver9.com.au
+    - export DEPLOYPATH=/home/w5yznj9jl555/public_html/edeliver9.com.au
     - /bin/cp -R images $DEPLOYPATH
