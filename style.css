@@ -35,7 +35,7 @@ img {
   max-width: 100%;
 }
 .wrap {
-  max-width: 1140px;
+  max-width: 1260px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -175,9 +175,17 @@ nav li:last-child {
   place-items: center;
   text-align: center;
   padding-bottom: 100px;
-  background:
-    var(--hero-img) center top/cover no-repeat,
-    radial-gradient(ellipse at 50% 35%, #7d8898, #3d4655 55%, #1c212a);
+  background: url("./images/hero-baackground.jpg") no-repeat center center/cover;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  opacity: 0.7;
+  background-image: linear-gradient(180deg, #000000 22%, #287cc161 95%);
 }
 .hero h1 {
   font:
@@ -186,6 +194,8 @@ nav li:last-child {
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: #fff;
+  position: relative;
+  z-index: 9;
 }
 .hero h1 span {
   display: block;
@@ -195,6 +205,8 @@ nav li:last-child {
   margin-top: 40px;
   display: inline-flex;
   gap: 17px;
+  position: relative;
+  z-index: 9;
 }
 .hb {
   display: inline-flex;
@@ -202,7 +214,7 @@ nav li:last-child {
   justify-content: center;
   height: 44px;
   padding: 0 34px;
-  border-radius: 6px;
+  border-radius: 12px;
   font:
     500 12px/1 "Poppins",
     sans-serif;
@@ -269,11 +281,15 @@ section {
   flex: 1;
 }
 .card h3 {
-  font: 400 14px "Poppins";
+  font: 400 20px "Poppins";
   text-align: center;
   display: table;
   margin: 0 auto 16px;
   padding-bottom: 3px;
+  text-decoration: underline !important;
+  text-decoration-color: #2ea8c4 !important;
+  text-underline-offset: 8px !important;
+  text-decoration-thickness: 1px !important;
 }
 .row {
   display: grid;
@@ -288,13 +304,13 @@ section {
   align-items: flex-start;
 }
 .price {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
 }
 .spec li {
   position: relative;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
   margin-bottom: 6px;
   color: var(--mut);
@@ -479,10 +495,15 @@ section {
 }
 .vid {
   position: relative;
-  width: min(100%, 300px);
+  width: min(100%, 400px);
   aspect-ratio: 16/10;
   overflow: hidden;
   display: block;
+  border-radius: 20px;
+}
+.vid:hover img {
+  transform: scale(1.1);
+  transition: 0.3s;
 }
 .vid img {
   width: 100%;
@@ -551,12 +572,14 @@ section {
 }
 form {
   display: grid;
-  /* grid-template-columns: 1fr 1fr; */
   gap: 16px 12px;
+}
+form#f {
+  grid-template-columns: 1fr 1fr;
 }
 form label {
   display: block;
-  font-size: 10px;
+  font-size: 16px;
   margin-bottom: 4px;
 }
 form label em {
@@ -605,13 +628,13 @@ footer {
   gap: 28px;
 }
 footer h5 {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   margin-bottom: 14px;
 }
 footer li,
 footer p {
-  font-size: 12px;
+  font-size: 16px;
   margin-bottom: 9px;
 }
 footer a:hover {
@@ -621,7 +644,7 @@ footer .logo img {
   height: 50px;
 }
 .about-t {
-  max-width: 260px;
+  max-width: 90%;
   margin-top: 14px;
   color: var(--mut);
 }
@@ -645,9 +668,9 @@ footer .logo img {
 }
 .copy {
   text-align: center;
-  font-size: 10px;
-  margin-top: 38px;
-  line-height: 1.9;
+  font-size: 13px;
+  margin-top: 70px;
+  line-height: 3.5;
 }
 
 @media (max-width: 900px) {
@@ -689,10 +712,10 @@ footer .logo img {
     flex-wrap: wrap;
   }
   .row {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
   }
   #homeProducts .row {
-    display: flex;
+    display: flex !important;
     gap: 12px 12px;
   }
   .card .body {
@@ -1195,4 +1218,3 @@ table.specs td:first-child {
 }
   
 }
-  
