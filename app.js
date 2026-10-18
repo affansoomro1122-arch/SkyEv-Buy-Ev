@@ -1,127 +1,138 @@
-/* SKY EV – shared logic (vanilla JS; products are stored on Netlify via /api/products) */
+/* SKY EV – shared logic (vanilla JS; products are stored in your GoDaddy MySQL database via api.php) */
 (function () {
   "use strict";
 
-  /* The functions answer at /api/<name>; if that address is not available, fall back to Netlify's default address. */
-  function fx(name, opts) {
-    return fetch("/api/" + name, opts).then(function (r) {
-      return r.status === 404 ? fetch("/.netlify/functions/" + name, opts) : r;
-    });
-  }
-  var NO_FN = "Server functions not found (404). Deploy the site with its netlify/functions folder using GitHub or Netlify CLI (not drag-and-drop).";
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
-  // SITE LOGO: put your logo file in the /images folder and set its exact file name here.
-  // This one value is used for the header and footer on every page.
-var LOGO = "/images/logo.png";
-var LOGO_VIDEO = "/images/newLogo.webm";
+  var LOGO = CDN + "/2026/05/05021313/MERGED-skyevlogo-removebg-preview-1.png";
 
-  /* DEFAULT product – shown until the first time you save from the admin page */
+  /* DEFAULT product – shown only while the database is still empty/new, or if the server can't be reached */
   var SEED = [
-   {
-    "id": "ldv-edeliver-9",
-    "name": "LDV eDeliver 9",
-    "price": 89000,
-    "priceNote": "Plus on-road costs",
-    "booking": 5000,
-    "createdAt": 1700000000000,
-    "description": "LIFT YOUR GAME!\n\nELECTRIC TRUCK AT DIESEL TRUCK PRICE.\n\nMORE PAYLOAD. LOWER RUNNING COSTS.\n\nIntroducing the LDV eDeliver 9, Australia's lightest 4.5-tonne electric Pantech truck, combining exceptional payload capacity, outstanding value for money and the benefits of zero-emission transport.\n\nCheaper than Japanese Euro 6 diesel trucks, with more payload and significantly lower running costs.\n\nBuilt for Australian businesses, the eDeliver 9 combines modern electric vehicle technology with DROPTRUCK's lightweight body engineering, delivering a practical, work-ready solution that helps businesses carry more and spend less.\n\nForget expensive diesel, rising fuel costs and costly engine maintenance. Make the switch to electric and put those savings straight back into your business.\n\nCUT YOUR FUEL COSTS. BUILD YOUR PROFITS.\n\nWhy pay more for a diesel truck when you can drive electric for less?\n\nAvailable through SKYEV, complete with an Australian-manufactured DROPTRUCK body and ready to work.",
-    "images": [
-     "https://dao000pg6obv7.cloudfront.net/wp-content/uploads/2026/09/04141105/08_20260904.webp"
-    ],
-    "specs": [
-     [
-      "GVM",
-      "4,500 kg"
-     ],
-     [
-      "Weight",
-      "3,015 kg (including 650 kg Pantech body)"
-     ],
-     [
-      "Payload",
-      "1,485 kg"
-     ],
-     [
-      "Battery",
-      "88.8 kWh LFP"
-     ],
-     [
-      "Drive System",
-      "Rear Wheel Drive / Electric"
-     ],
-     [
-      "Motor",
-      "PMS 170 kW / 330 Nm"
-     ],
-     [
-      "Top speed",
-      "105 km/h"
-     ],
-     [
-      "Wheelbase",
-      "4,048 mm"
-     ],
-     [
-      "DC Fast Charging",
-      "90 kW"
-     ],
-     [
-      "AC Charging",
-      "11 kW three-phase / 7 kW single-phase"
-     ],
-     [
-      "Odometer",
-      "50 km"
-     ],
-     [
-      "Box",
-      "4.2 m"
-     ],
-     [
-      "Doors",
-      "Barn doors"
-     ],
-     [
-      "Taillift",
-      "N/A"
-     ],
-     [
-      "Availability",
-      "6 weeks"
-     ],
-     [
-      "Range",
-      "Up to 235 km WLTP (small box configuration)"
-     ],
-     [
-      "Year",
-      "2027"
-     ]
-    ]
-   }
+    {
+      "id": "ldv-edeliver-9",
+      "name": "LDV eDeliver 9",
+      "price": 89000,
+      "priceNote": "Plus on-road costs",
+      "booking": 5000,
+      "createdAt": 1700000000000,
+      "description": "LIFT YOUR GAME!\n\nELECTRIC TRUCK AT DIESEL TRUCK PRICE.\n\nMORE PAYLOAD. LOWER RUNNING COSTS.\n\nIntroducing the LDV eDeliver 9, Australia's lightest 4.5-tonne electric Pantech truck, combining exceptional payload capacity, outstanding value for money and the benefits of zero-emission transport.\n\nCheaper than Japanese Euro 6 diesel trucks, with more payload and significantly lower running costs.\n\nBuilt for Australian businesses, the eDeliver 9 combines modern electric vehicle technology with DROPTRUCK's lightweight body engineering, delivering a practical, work-ready solution that helps businesses carry more and spend less.\n\nForget expensive diesel, rising fuel costs and costly engine maintenance. Make the switch to electric and put those savings straight back into your business.\n\nCUT YOUR FUEL COSTS. BUILD YOUR PROFITS.\n\nWhy pay more for a diesel truck when you can drive electric for less?\n\nAvailable through SKYEV, complete with an Australian-manufactured DROPTRUCK body and ready to work.",
+      "images": [
+        "https://dao000pg6obv7.cloudfront.net/wp-content/uploads/2026/09/04141105/08_20260904.webp"
+      ],
+      "specs": [
+        [
+          "GVM",
+          "4,500 kg"
+        ],
+        [
+          "Weight",
+          "3,015 kg (including 650 kg Pantech body)"
+        ],
+        [
+          "Payload",
+          "1,485 kg"
+        ],
+        [
+          "Battery",
+          "88.8 kWh LFP"
+        ],
+        [
+          "Drive System",
+          "Rear Wheel Drive / Electric"
+        ],
+        [
+          "Motor",
+          "PMS 170 kW / 330 Nm"
+        ],
+        [
+          "Top speed",
+          "105 km/h"
+        ],
+        [
+          "Wheelbase",
+          "4,048 mm"
+        ],
+        [
+          "DC Fast Charging",
+          "90 kW"
+        ],
+        [
+          "AC Charging",
+          "11 kW three-phase / 7 kW single-phase"
+        ],
+        [
+          "Odometer",
+          "50 km"
+        ],
+        [
+          "Box",
+          "4.2 m"
+        ],
+        [
+          "Doors",
+          "Barn doors"
+        ],
+        [
+          "Taillift",
+          "N/A"
+        ],
+        [
+          "Availability",
+          "6 weeks"
+        ],
+        [
+          "Range",
+          "Up to 235 km WLTP (small box configuration)"
+        ],
+        [
+          "Year",
+          "2027"
+        ]
+      ]
+    }
   ];
 
   function clone(o) {
     return JSON.parse(JSON.stringify(o));
   }
 
-  /* Everyone (every browser) loads the same list from the server. */
+  /* ===== DATA LIVES IN YOUR GODADDY DATABASE (MySQL), read/written through api.php =====
+     api.php must be uploaded next to these files (see SETUP-GODADDY-DATABASE.md).
+     If you ever host the pages on a different domain, put the full address of api.php here,
+     e.g. "https://yourdomain.com/api.php" - the data stays safe in your database. */
+  var API_URL = "api.php";
+  var CACHE = "sky_last_products"; // last good copy in the visitor's browser (used only if Google is unreachable)
+
+  function configured() {
+    return !!API_URL;
+  }
+
+  /* Every visitor, on every domain, loads the same list from your database. */
   function load() {
-    return fx("products", { cache: "no-store" })
+    if (!configured()) return Promise.resolve(clone(SEED));
+    return fetch(API_URL + (API_URL.indexOf("?") < 0 ? "?" : "&") + "action=list&t=" + Date.now())
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(function (d) {
-        return Array.isArray(d.list) ? d.list : clone(SEED);
+        if (!d || d.ok === false) throw new Error((d && d.error) || "bad response");
+        var list = Array.isArray(d.list) ? d.list : clone(SEED); // empty/new database -> default product
+        try {
+          localStorage.setItem(CACHE, JSON.stringify(list));
+        } catch (e) {}
+        return list;
       })
       .catch(function () {
+        try {
+          var c = JSON.parse(localStorage.getItem(CACHE));
+          if (Array.isArray(c)) return c;
+        } catch (e) {}
         return clone(SEED);
       });
   }
 
-  /* ---- admin helpers (the passcode is checked on the server) ---- */
+  /* ---- admin helpers (the passcode is checked in api.php using ADMIN_PIN from config.php) ---- */
   function pin() {
     try {
       return sessionStorage.getItem("skyPin") || "";
@@ -129,24 +140,24 @@ var LOGO_VIDEO = "/images/newLogo.webm";
       return "";
     }
   }
-  function call(method, body) {
-    return fx("products", {
-      method: method,
-      headers: { "content-type": "application/json", "x-admin-pin": pin() },
-      body: body ? JSON.stringify(body) : undefined,
+  function call(payload) {
+    if (!configured()) {
+      return Promise.resolve({ ok: false, d: { error: "The API address is not set (API_URL in app.js)." } });
+    }
+    payload.pin = pin();
+    return fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, // plain text keeps this a "simple" request (no CORS preflight)
+      body: JSON.stringify(payload),
     })
       .then(function (r) {
-        return r.json().then(
-          function (d) {
-            return { ok: r.ok, d: d };
-          },
-          function () {
-            return { ok: false, d: { error: r.status === 404 ? NO_FN : "Server error (" + r.status + ")." } };
-          },
-        );
+        return r.json();
+      })
+      .then(function (d) {
+        return { ok: !!(d && d.ok), d: d || {} };
       })
       .catch(function () {
-        return { ok: false, d: { error: "Cannot reach the server. Is the site deployed on Netlify?" } };
+        return { ok: false, d: { error: "Cannot reach api.php. Check that api.php and config.php are uploaded and the database details are correct." } };
       });
   }
   function login(p) {
@@ -154,7 +165,7 @@ var LOGO_VIDEO = "/images/newLogo.webm";
     try {
       sessionStorage.setItem("skyPin", p);
     } catch (e) {}
-    return call("POST").then(function (r) {
+    return call({ action: "check" }).then(function (r) {
       if (!r.ok) {
         try {
           sessionStorage.removeItem("skyPin");
@@ -164,69 +175,45 @@ var LOGO_VIDEO = "/images/newLogo.webm";
     });
   }
   function save(list) {
-    return call("PUT", list);
+    return call({ action: "save", list: list });
+  }
+  function toBase64(blob) {
+    return new Promise(function (res, rej) {
+      var fr = new FileReader();
+      fr.onerror = rej;
+      fr.onload = function () {
+        res(String(fr.result).split(",")[1] || "");
+      };
+      fr.readAsDataURL(blob);
+    });
+  }
+  /* photos and videos are saved in the "uploads" folder on your hosting */
+  function upload(blob) {
+    return toBase64(blob).then(function (data) {
+      return call({ action: "upload", type: blob.type, data: data }).then(function (r) {
+        if (!r.ok) throw new Error(r.d.error || "Upload failed.");
+        return r.d.url;
+      });
+    });
   }
   function uploadImage(blob) {
-    return fx("image", {
-      method: "POST",
-      headers: { "content-type": blob.type, "x-admin-pin": pin() },
-      body: blob,
-    }).then(function (r) {
-      return r.json().then(
-        function (d) {
-          if (!r.ok) throw new Error(d.error || "Upload failed.");
-          return d.url;
-        },
-        function () {
-          throw new Error(r.status === 404 ? NO_FN : "Upload failed (" + r.status + ").");
-        },
-      );
-    });
+    return upload(blob);
   }
-
-  var MAX_VIDEO = 4 * 1024 * 1024; // Netlify functions accept ~6 MB per request
   function uploadVideo(file) {
-    if (!file) return Promise.reject(new Error("No video selected."));
-    if (file.type !== "video/mp4" && file.type !== "video/webm") {
-      return Promise.reject(new Error("Only MP4 or WebM videos."));
-    }
-    if (file.size > MAX_VIDEO) {
-      return Promise.reject(new Error("Video is too large (max 4 MB). Paste a YouTube/Vimeo link for bigger videos."));
-    }
-    return fx("video", {
-      method: "POST",
-      headers: { "content-type": file.type, "x-admin-pin": pin() },
-      body: file,
-    }).then(function (r) {
-      return r.json().then(
-        function (d) {
-          if (!r.ok) throw new Error(d.error || "Video upload failed.");
-          return d.url;
-        },
-        function () {
-          throw new Error(r.status === 404 ? NO_FN : "Video upload failed (" + r.status + ").");
-        },
-      );
-    });
+    return upload(file);
   }
 
-  /* Turn a video link into something playable: { kind: "iframe"|"file", src } */
-  function videoInfo(u) {
+  /* Recognise a video link: YouTube, Vimeo, Google Drive, or a direct video file (.mp4 / .webm) */
+  function parseVideo(u) {
     u = String(u || "").trim();
-    if (!u) return null;
-    var m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/i);
-    if (m) return { kind: "iframe", src: "https://www.youtube.com/embed/" + m[1] + "?rel=0" };
+    if (!/^https?:\/\//i.test(u) && (u.charAt(0) !== "/" || u.charAt(1) === "/")) return null;
+    var m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/i);
+    if (m) return { kind: "youtube", id: m[1], thumb: "https://img.youtube.com/vi/" + m[1] + "/hqdefault.jpg" };
     m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
-    if (m) return { kind: "iframe", src: "https://player.vimeo.com/video/" + m[1] };
-    return { kind: "file", src: u };
-  }
-  function videoHTML(u, poster) {
-    var v = videoInfo(u);
-    if (!v) return "";
-    if (v.kind === "iframe") {
-      return '<iframe src="' + esc(v.src) + '" title="Product video" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
-    }
-    return '<video src="' + esc(v.src) + '" controls playsinline preload="metadata"' + (poster ? ' poster="' + esc(poster) + '"' : "") + "></video>";
+    if (m) return { kind: "vimeo", id: m[1], thumb: "https://vumbnail.com/" + m[1] + ".jpg" };
+    m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([\w-]{10,})/i);
+    if (m) return { kind: "drive", id: m[1], thumb: "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1000" };
+    return { kind: "file" };
   }
 
   function esc(s) {
@@ -323,14 +310,18 @@ var LOGO_VIDEO = "/images/newLogo.webm";
     var h = document.getElementById("site-header");
     if (h) {
       h.outerHTML =
-  '<header class="solid"><div class="hwrap">' +
-  '<a href="/" class="logoGrid"><video loop autoplay muted playsinline><source src="' + LOGO_VIDEO + '"></video></a>' +
-  '<a class="logo" href="/"><img src="' + LOGO + '" alt="SKY"></a>' +
-  '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
-  '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
-  "<li><a " + (inProducts ? 'class="on" ' : "") + 'href="products.html">Products</a></li>' +
-  '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
-  '<li><a class="cart" href="#" aria-label="Cart">' + cartSvg + "<b>0</b></a></li></ul></nav></div></header>";
+        '<header class="solid"><div class="hwrap"><a class="logo" href="index.html"><img src="' +
+        LOGO +
+        '" alt="SKY"></a>' +
+        '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
+        '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
+        "<li><a " +
+        (inProducts ? 'class="on" ' : "") +
+        'href="products.html">Products</a></li>' +
+        '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
+        '<li><a class="cart" href="#" aria-label="Cart">' +
+        cartSvg +
+        "<b>0</b></a></li></ul></nav></div></header>";
       var nv = document.getElementById("nv");
       document.getElementById("bg").onclick = function () {
         nv.classList.toggle("open");
@@ -340,9 +331,9 @@ var LOGO_VIDEO = "/images/newLogo.webm";
     if (f) {
       f.outerHTML =
         '<footer><div class="wrap"><div class="fgrid">' +
-        '<div><a class="logo" href="/"><img src="' +
-        LOGO +
-        '" alt="SKY"></a>' +
+        '<div><a class="logo" href="index.html"><img src="' +
+        CDN +
+        '/2026/04/14182745/logo_n-1.jpeg" alt="SKY"></a>' +
         '<p class="about-t">Specialising in commercial electric vehicles. The SKY brand stands for quality, reliability, and the confidence your business depends on.</p></div>' +
         '<div><h5>Useful Links</h5><ul><li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li><li><a href="products.html">Product</a></li><li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li></ul></div>' +
         '<div><h5>Contact Us</h5><ul><li><a href="tel:+61428796970">+61 428796970</a></li><li><a href="mailto:info@skyev.com.au">info@skyev.com.au</a></li><li>4 Chiltern Rd Ingleside, NSW 2101</li></ul></div>' +
@@ -352,10 +343,6 @@ var LOGO_VIDEO = "/images/newLogo.webm";
   }
   document.addEventListener("DOMContentLoaded", function () {
     chrome();
-    // any <img data-logo> (e.g. on index.html) gets the same logo
-    [].forEach.call(document.querySelectorAll("img[data-logo]"), function (im) {
-      im.src = LOGO;
-    });
   });
 
   window.SKY = {
@@ -365,8 +352,7 @@ var LOGO_VIDEO = "/images/newLogo.webm";
     login: login,
     uploadImage: uploadImage,
     uploadVideo: uploadVideo,
-    videoHTML: videoHTML,
-    videoInfo: videoInfo,
+    parseVideo: parseVideo,
     defaults: function () {
       return clone(SEED);
     },
