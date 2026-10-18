@@ -4,7 +4,8 @@
 
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
-  var LOGO = CDN + "/2026/05/05021313/MERGED-skyevlogo-removebg-preview-1.png";
+  var LOGO = "/images/logo.png";
+  var LOGO_VIDEO = "/images/newLogo.webm";
 
   /* DEFAULT product – shown only while the database is still empty/new, or if the server can't be reached */
   var SEED = [
@@ -310,18 +311,14 @@
     var h = document.getElementById("site-header");
     if (h) {
       h.outerHTML =
-        '<header class="solid"><div class="hwrap"><a class="logo" href="index.html"><img src="' +
-        LOGO +
-        '" alt="SKY"></a>' +
-        '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
-        '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
-        "<li><a " +
-        (inProducts ? 'class="on" ' : "") +
-        'href="products.html">Products</a></li>' +
-        '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
-        '<li><a class="cart" href="#" aria-label="Cart">' +
-        cartSvg +
-        "<b>0</b></a></li></ul></nav></div></header>";
+  '<header class="solid"><div class="hwrap">' +
+  '<a href="/" class="logoGrid"><video loop autoplay muted playsinline><source src="' + LOGO_VIDEO + '"></video></a>' +
+  '<a class="logo" href="/"><img src="' + LOGO + '" alt="SKY"></a>' +
+  '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
+  '<li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li>' +
+  "<li><a " + (inProducts ? 'class="on" ' : "") + 'href="products.html">Products</a></li>' +
+  '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
+  '<li><a class="cart" href="#" aria-label="Cart">' + cartSvg + "<b>0</b></a></li></ul></nav></div></header>";
       var nv = document.getElementById("nv");
       document.getElementById("bg").onclick = function () {
         nv.classList.toggle("open");
@@ -331,9 +328,9 @@
     if (f) {
       f.outerHTML =
         '<footer><div class="wrap"><div class="fgrid">' +
-        '<div><a class="logo" href="index.html"><img src="' +
-        CDN +
-        '/2026/04/14182745/logo_n-1.jpeg" alt="SKY"></a>' +
+        '<div><a class="logo" href="/"><img src="' +
+        LOGO +
+        '" alt="SKY"></a>' +
         '<p class="about-t">Specialising in commercial electric vehicles. The SKY brand stands for quality, reliability, and the confidence your business depends on.</p></div>' +
         '<div><h5>Useful Links</h5><ul><li><a href="index.html">Home</a></li><li><a href="index.html#about">About Us</a></li><li><a href="products.html">Product</a></li><li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li></ul></div>' +
         '<div><h5>Contact Us</h5><ul><li><a href="tel:+61428796970">+61 428796970</a></li><li><a href="mailto:info@skyev.com.au">info@skyev.com.au</a></li><li>4 Chiltern Rd Ingleside, NSW 2101</li></ul></div>' +
