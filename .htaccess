@@ -1,0 +1,5 @@
+# Keep the database password file private and don't list folders
+<FilesMatch "^config\.php$">
+  Require all denied
+</FilesMatch>
+Options -Indexes
