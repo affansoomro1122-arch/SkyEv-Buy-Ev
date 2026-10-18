@@ -12,7 +12,7 @@
     {
       "id": "ldv-edeliver-9",
       "name": "LDV eDeliver 9",
-      "price": 89000,
+      "price": 98000,
       "priceNote": "Plus on-road costs",
       "booking": 5000,
       "createdAt": 1700000000000,
