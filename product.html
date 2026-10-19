@@ -63,9 +63,10 @@
     '</div></div>' +
     '<div class="related" id="rel"></div>';
 
-  /* gallery: photos + videos (YouTube / Vimeo / video file) */
-  var media = imgs.filter(Boolean).map(function (s) { return { t: 'i', src: s }; });
-  (p.videos || []).forEach(function (v) { var pv = SKY.parseVideo(v.url); if (pv) media.push({ t: 'v', v: v, pv: pv }); });
+  /* gallery: videos first, then photos (YouTube / Vimeo / Google Drive / video file) */
+  var media = [];
+  (p.videos || []).forEach(function (v) { var pv = SKY.parseVideo(v.url); if (pv) media.push({ t: 'v', v: v, pv: pv }); });   /* videos come first */
+  imgs.filter(Boolean).forEach(function (s) { media.push({ t: 'i', src: s }); });
   var gm = document.getElementById('gm'), th = document.getElementById('th');
   function showMedia(i, auto) {
     var m = media[i]; if (!m) { gm.innerHTML = ''; return; }
