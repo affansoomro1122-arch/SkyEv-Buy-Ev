@@ -110,7 +110,7 @@
   };
   $('out').onclick = function () { sessionStorage.removeItem('skyAdmin'); sessionStorage.removeItem('skyPin'); $('pin').value = ''; show(); };
 
-  function say(t) { $('msg').textContent = t; clearTimeout(msgT); msgT = setTimeout(function () { $('msg').textContent = ''; }, 3500); }
+  function say(t) { $('msg').textContent = t; clearTimeout(msgT); msgT = setTimeout(function () { $('msg').textContent = ''; }, 8000); }
 
   /* ---------- images ---------- */
   function shrink(file) {
