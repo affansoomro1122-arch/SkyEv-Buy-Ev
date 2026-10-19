@@ -4,11 +4,11 @@
 
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
-  var LOGO = "/images/logo.png";
+    var LOGO = "/images/logo.png";
   var LOGO_VIDEO = "/images/newLogo.webm";
 
   /* DEFAULT product – shown only while the database is still empty/new, or if the server can't be reached */
-  var SEED = [
+   var SEED = [
     {
       "id": "4-5-electric-pantech",
       "name": "4.5 Electric Pantech",
@@ -93,6 +93,7 @@
     }
   ];
 
+  
   function clone(o) {
     return JSON.parse(JSON.stringify(o));
   }
@@ -103,6 +104,26 @@
      e.g. "https://yourdomain.com/api.php" - the data stays safe in your database. */
   var API_URL = "api.php";
   var CACHE = "sky_last_products"; // last good copy in the visitor's browser (used only if Google is unreachable)
+
+  /* Uploaded files are stored as "/uploads/..." (no domain). If api.php lives on another domain, add that domain when loading. */
+  var API_ORIGIN = (String(API_URL).match(/^https?:\/\/[^\/]+/i) || [""])[0];
+  function fixUrl(u) {
+    return API_ORIGIN && typeof u === "string" && u.charAt(0) === "/" && u.charAt(1) !== "/" ? API_ORIGIN + u : u;
+  }
+  function unfixUrl(u) {
+    return API_ORIGIN && typeof u === "string" && u.indexOf(API_ORIGIN + "/") === 0 ? u.slice(API_ORIGIN.length) : u;
+  }
+  function mapUrls(list, fn) {
+    return list.map(function (p) {
+      var q = {};
+      for (var k in p) q[k] = p[k];
+      q.images = (p.images || []).map(fn);
+      q.videos = (p.videos || []).map(function (v) {
+        return { url: fn(v.url), kind: v.kind, thumb: fn(v.thumb || "") };
+      });
+      return q;
+    });
+  }
 
   function configured() {
     return !!API_URL;
@@ -118,7 +139,7 @@
       })
       .then(function (d) {
         if (!d || d.ok === false) throw new Error((d && d.error) || "bad response");
-        var list = Array.isArray(d.list) ? d.list : clone(SEED); // empty/new database -> default product
+        var list = Array.isArray(d.list) ? mapUrls(d.list, fixUrl) : clone(SEED); // empty/new database -> default product
         try {
           localStorage.setItem(CACHE, JSON.stringify(list));
         } catch (e) {}
@@ -152,7 +173,15 @@
       body: JSON.stringify(payload),
     })
       .then(function (r) {
-        return r.json();
+        return r.json().catch(function () {
+          return {
+            ok: false,
+            error:
+              r.status === 413
+                ? "The file is bigger than your server allows. Use a smaller file, or paste a YouTube / Google Drive link."
+                : "Server error (" + r.status + "). Check that api.php and config.php are uploaded correctly.",
+          };
+        });
       })
       .then(function (d) {
         return { ok: !!(d && d.ok), d: d || {} };
@@ -176,7 +205,7 @@
     });
   }
   function save(list) {
-    return call({ action: "save", list: list });
+    return call({ action: "save", list: mapUrls(list, unfixUrl) });
   }
   function toBase64(blob) {
     return new Promise(function (res, rej) {
@@ -193,7 +222,7 @@
     return toBase64(blob).then(function (data) {
       return call({ action: "upload", type: blob.type, data: data }).then(function (r) {
         if (!r.ok) throw new Error(r.d.error || "Upload failed.");
-        return r.d.url;
+        return fixUrl(r.d.url);
       });
     });
   }
@@ -308,9 +337,10 @@
   function chrome() {
     var page = location.pathname.split("/").pop();
     var inProducts = page.indexOf("product") === 0;
+    var inAbout = page.indexOf("about") === 0;
     var h = document.getElementById("site-header");
     if (h) {
-      h.outerHTML =
+           h.outerHTML =
   '<header class="solid"><div class="hwrap">' +
   '<a href="/" class="logoGrid"><video loop autoplay muted playsinline><source src="' + LOGO_VIDEO + '"></video></a>' +
   '<a class="logo" href="/"><img src="' + LOGO + '" alt="SKY"></a>' +
