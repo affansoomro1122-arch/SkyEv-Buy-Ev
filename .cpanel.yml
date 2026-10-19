@@ -1,8 +1,5 @@
 ---
 deployment:
   tasks:
-    - export SITE1=/home/w5yznj9jl555/public_html/edeliver9.com.au
     - export SITE2=/home/w5yznj9jl555/public_html/buyevtruck.com
-
-    - /bin/cp -R * $SITE1
     - /bin/cp -R * $SITE2
