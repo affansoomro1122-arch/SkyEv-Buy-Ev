@@ -3,12 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Product | BUY EV Electric Trucks</title>
+<title>Product | SKY Electric Trucks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/STYLE1.CSS">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-<style>.d-note{font-size:12px;color:var(--mut);margin:-8px 0 16px}.book{display:flex;align-items:baseline;gap:12px;border:1px solid var(--teal);background:#0c0c0d;padding:10px 16px;margin-bottom:22px;border-radius:6px;width:fit-content}.book span{font-size:12px;color:var(--mut)}.book b{font-weight:600;font-size:15px}</style>
+<style>.d-note{font-size:12px;color:var(--mut);margin:-8px 0 16px}.book{display:flex;align-items:baseline;gap:12px;border:1px solid var(--teal);background:#0c0c0d;padding:10px 16px;margin-bottom:22px;border-radius:6px;width:fit-content}.book span{font-size:12px;color:var(--mut)}.book b{font-weight:600;font-size:15px}.gal-main iframe,.gal-main video{width:100%;height:100%;border:0;background:#000;display:block}
+.thumbs button{position:relative}.thumbs button.vt{background:#111}
+.thumbs button.vt::after{content:"\25B6";position:absolute;inset:0;margin:auto;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:10px;line-height:25px;text-align:center;padding-left:2px;border:1px solid rgba(255,255,255,.75)}
+.gal-link{margin-top:10px;font-size:12px;min-height:18px}.gal-link a{color:var(--teal)}.gal-link a:hover{text-decoration:underline}
+.vfail{height:100%;display:grid;place-content:center;gap:8px;text-align:center;padding:20px;background:#111;color:#ddd;font-size:13px}.vfail a{color:var(--teal);text-decoration:underline}
+</style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -35,15 +41,6 @@
   document.title = p.name + ' | SKY Electric Trucks';
 
   var imgs = (p.images && p.images.length) ? p.images : [''];
-  // Gallery items: the product video (if any) is always first = the main item
-  var media = [];
-  if (p.video && SKY.videoInfo(p.video)) media.push({ t: 'v', src: p.video });
-  imgs.forEach(function (u) { media.push({ t: 'i', src: u }); });
-  function mainHTML(m) {
-    return m.t === 'v'
-      ? SKY.videoHTML(m.src, imgs[0])
-      : '<img id="gm" src="' + E(m.src) + '" alt="' + E(p.name) + '">';
-  }
   var specs = (p.specs || []).map(function (s) {
     return '<tr><td>' + E(s[0]) + '</td><td>' + E(s[1]) + '</td></tr>';
   }).join('');
@@ -53,16 +50,12 @@
   view.innerHTML =
     '<div class="crumbs"><a href="index.html">Home</a> / <a href="products.html">Products</a> / ' + E(p.name) + '</div>' +
     '<div class="detail"><div>' +
-      '<div class="gal-main' + (media[0].t === 'v' ? ' is-video' : '') + '" id="gmain">' + mainHTML(media[0]) + '</div>' +
-      (media.length > 1 ? '<div class="thumbs" id="th">' + media.map(function (m, i) {
-        return '<button type="button" class="' + (i ? '' : 'on') + (m.t === 'v' ? ' vthumb' : '') + '" data-i="' + i + '" aria-label="' + (m.t === 'v' ? 'Product video' : 'Image ' + (i + 1)) + '">' +
-          (m.t === 'v' ? (imgs[0] ? '<img src="' + E(imgs[0]) + '" alt="">' : '') + '<span class="play"><i class="fa-solid fa-play"></i></span>' : '<img src="' + E(m.src) + '" alt="">') + '</button>';
-      }).join('') + '</div>' : '') +
+      '<div class="gal-main" id="gm"></div><div class="gal-link" id="gl"></div><div class="thumbs" id="th"></div>' +
     '</div><div>' +
       '<h1>' + E(p.name) + '</h1>' +
       '<div class="d-price">' + SKY.money(p.price) + '</div>' +
       (p.priceNote ? '<div class="d-note">' + E(p.priceNote) + '</div>' : '') +
-      (p.booking > 0 ? '<div class="book"><span>Deposit</span><b>' + SKY.money0(p.booking) + ' to Secure</b></div>' : '') +
+      (p.booking > 0 ? '<div class="book"><span>Booking price</span><b>' + SKY.money0(p.booking) + ' to Secure</b></div>' : '') +
       (p.description ? '<p class="d-desc">' + E(p.description) + '</p>' : '') +
       (specs ? '<h4>Features</h4><table class="specs">' + specs + '</table>' : '') +
       '<div class="actions"><a class="btn wa" href="' + wa + '" target="_blank" rel="noopener">' + waIcon + 'WhatsApp</a>' +
@@ -70,14 +63,32 @@
     '</div></div>' +
     '<div class="related" id="rel"></div>';
 
-  var th = document.getElementById('th');
-  if (th) th.onclick = function (e) {
-    var b = e.target.closest('button'); if (!b) return;
-    var m = media[+b.dataset.i], g = document.getElementById('gmain');
-    g.innerHTML = mainHTML(m);               // replacing the HTML also stops a playing video
-    g.classList.toggle('is-video', m.t === 'v');
-    [].forEach.call(th.children, function (c) { c.classList.toggle('on', c === b); });
-  };
+  /* gallery: videos first, then photos (YouTube / Vimeo / Google Drive / video file) */
+  var media = [];
+  (p.videos || []).forEach(function (v) { var pv = SKY.parseVideo(v.url); if (pv) media.push({ t: 'v', v: v, pv: pv }); });   /* videos come first */
+  imgs.filter(Boolean).forEach(function (s) { media.push({ t: 'i', src: s }); });
+  var gm = document.getElementById('gm'), th = document.getElementById('th');
+  function showMedia(i, auto) {
+    var m = media[i]; if (!m) { gm.innerHTML = ''; return; }
+    var ap = auto ? '1' : '0';
+    if (m.t === 'i') gm.innerHTML = '<img src="' + E(m.src) + '" alt="' + E(p.name) + '">';
+    else if (m.pv.kind === 'youtube') gm.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + m.pv.id + '?rel=0&autoplay=' + ap + '" title="Product video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    else if (m.pv.kind === 'vimeo') gm.innerHTML = '<iframe src="https://player.vimeo.com/video/' + m.pv.id + '?autoplay=' + ap + '" title="Product video" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+    else if (m.pv.kind === 'drive') gm.innerHTML = '<iframe src="https://drive.google.com/file/d/' + m.pv.id + '/preview" title="Product video" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+    else gm.innerHTML = '<video controls playsinline preload="metadata"' + (auto ? ' autoplay' : '') + ' poster="' + E(m.v.thumb || '') + '" src="' + E(m.v.url) + '"></video>';
+    var vv = gm.querySelector('video');
+    if (vv) vv.addEventListener('error', function () { gm.innerHTML = '<div class="vfail"><span>This video could not be loaded.</span><a href="' + E(m.v.url) + '" target="_blank" rel="noopener">Open it directly</a></div>'; });
+    document.getElementById('gl').innerHTML = m.t === 'v' ? '<a href="' + E(m.v.url) + '" target="_blank" rel="noopener">Video not playing? Open it in a new tab \u2197</a>' : '';
+    [].forEach.call(th.children, function (c, k) { c.classList.toggle('on', k === i); });
+  }
+  if (media.length > 1) {
+    th.innerHTML = media.map(function (m, i) {
+      var s = m.t === 'i' ? m.src : (m.v.thumb || (m.pv.thumb || ''));
+      return '<button type="button" class="' + (m.t === 'v' ? 'vt ' : '') + (i ? '' : 'on') + '" data-i="' + i + '" aria-label="' + (m.t === 'v' ? 'Play video ' : 'Image ') + (i + 1) + '">' + (s ? '<img src="' + E(s) + '" alt="">' : '') + '</button>';
+    }).join('');
+    th.onclick = function (e) { var b = e.target.closest('button'); if (b) showMedia(+b.dataset.i, true); };
+  }
+  showMedia(0, false);
 
   var others = SKY.newest(all.filter(function (x) { return x.id !== p.id; })).slice(0, 3);
   if (others.length) {
