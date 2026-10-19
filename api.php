@@ -177,11 +177,9 @@ function uploadFile($b) {
     if (!file_exists($dir . '/index.html')) @file_put_contents($dir . '/index.html', '');   // stops folder listing without special server settings
     $name = bin2hex(random_bytes(12)) . '.' . $types[$type];
     if (@file_put_contents($dir . '/' . $name, $data) === false) out(['ok' => false, 'error' => 'Could not save the file (uploads folder not writable).'], 500);
-    // use https whenever the admin page itself is on https (avoids blocked "mixed content" videos/photos)
-    $osch = parse_url((string)($_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '')), PHP_URL_SCHEME);
-    $https = $osch === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') || (($_SERVER['SERVER_PORT'] ?? '') === '443');
-    $base = ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-    return ['ok' => true, 'url' => $base . '/uploads/' . $name];
+    // saved WITHOUT the domain name (e.g. /uploads/abc.jpg) so photos and videos keep working if you change domain
+    $path = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/') . '/uploads/' . $name;
+    return ['ok' => true, 'url' => $path];
 }
 
 /* ---------- routing ---------- */
