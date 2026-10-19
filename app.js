@@ -10,8 +10,8 @@
   /* DEFAULT product – shown only while the database is still empty/new, or if the server can't be reached */
   var SEED = [
     {
-      "id": "ldv-edeliver-9",
-      "name": "LDV eDeliver 9",
+      "id": "4-5-electric-pantech",
+      "name": "4.5 Electric Pantech",
       "price": 98000,
       "priceNote": "Plus on-road costs",
       "booking": 5000,
