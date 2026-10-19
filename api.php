@@ -172,18 +172,26 @@ function uploadFile($b) {
     $dir = __DIR__ . '/uploads';
     if (!is_dir($dir) && !@mkdir($dir, 0755, true)) out(['ok' => false, 'error' => 'Cannot create the uploads folder. Create a folder named "uploads" next to api.php.'], 500);
     if (!file_exists($dir . '/.htaccess')) {
-        @file_put_contents($dir . '/.htaccess', "# uploaded files are only ever served, never executed\n<FilesMatch \"\\.(php|phtml|php[0-9]|phar|pl|py|cgi)$\">\n  Require all denied\n</FilesMatch>\nOptions -Indexes\n");
+        @file_put_contents($dir . '/.htaccess', "# uploaded files are only ever served, never executed\n<IfModule mod_authz_core.c>\n  <FilesMatch \"\\.(php|phtml|php[0-9]|phar|pl|py|cgi)$\">\n    Require all denied\n  </FilesMatch>\n</IfModule>\n<IfModule !mod_authz_core.c>\n  <FilesMatch \"\\.(php|phtml|php[0-9]|phar|pl|py|cgi)$\">\n    Order allow,deny\n    Deny from all\n  </FilesMatch>\n</IfModule>\n");
     }
+    if (!file_exists($dir . '/index.html')) @file_put_contents($dir . '/index.html', '');   // stops folder listing without special server settings
     $name = bin2hex(random_bytes(12)) . '.' . $types[$type];
     if (@file_put_contents($dir . '/' . $name, $data) === false) out(['ok' => false, 'error' => 'Could not save the file (uploads folder not writable).'], 500);
-    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    // use https whenever the admin page itself is on https (avoids blocked "mixed content" videos/photos)
+    $osch = parse_url((string)($_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '')), PHP_URL_SCHEME);
+    $https = $osch === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') || (($_SERVER['SERVER_PORT'] ?? '') === '443');
     $base = ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
     return ['ok' => true, 'url' => $base . '/uploads/' . $name];
 }
 
 /* ---------- routing ---------- */
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    $b = json_decode((string)file_get_contents('php://input'), true);
+    $raw = (string)file_get_contents('php://input');
+    if ($raw === '' && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+        // PHP drops requests bigger than post_max_size - tell the admin clearly instead of failing silently
+        out(['ok' => false, 'error' => 'The file is bigger than your server allows (post_max_size = ' . ini_get('post_max_size') . '). Use a smaller file, or paste a YouTube / Google Drive link.'], 413);
+    }
+    $b = json_decode($raw, true);
     if (!is_array($b)) out(['ok' => false, 'error' => 'Invalid request.'], 400);
     authed($b);
     $action = $b['action'] ?? '';
