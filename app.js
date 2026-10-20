@@ -359,11 +359,11 @@
         LOGO +
         '" alt="SKY"></a>' +
         '<button class="burger" id="bg" aria-label="Menu">☰</button><nav id="nv"><ul>' +
-        '<li><a href="index.html">Home</a></li><li><a ' + (inAbout ? 'class="on" ' : "") + 'href="about.html">About Us</a></li>' +
+        '<li><a href="/">Home</a></li><li><a ' + (inAbout ? 'class="on" ' : "") + 'href="about">About Us</a></li>' +
         "<li><a " +
         (inProducts ? 'class="on" ' : "") +
-        'href="products.html">Products</a></li>' +
-        '<li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li>' +
+        'href="products">Products</a></li>' +
+        '<li><a href="/#gallery">Gallery</a></li><li><a href="/#contact">Contact Us</a></li>' +
         '<li><a class="cart" href="#" aria-label="Cart">' +
         cartSvg +
         "<b>0</b></a></li></ul></nav></div></header>";
@@ -380,7 +380,7 @@
         LOGO +
         '" alt="SKY"></a>' +
         '<p class="about-t">Specialising in commercial electric vehicles. The SKY brand stands for quality, reliability, and the confidence your business depends on.</p></div>' +
-        '<div><h5>Useful Links</h5><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="products.html">Product</a></li><li><a href="index.html#gallery">Gallery</a></li><li><a href="index.html#contact">Contact Us</a></li></ul></div>' +
+        '<div><h5>Useful Links</h5><ul><li><a href="/">Home</a></li><li><a href="about">About Us</a></li><li><a href="products">Product</a></li><li><a href="/#gallery">Gallery</a></li><li><a href="/#contact">Contact Us</a></li></ul></div>' +
         '<div><h5>Contact Us</h5><ul><li><a href="tel:+61428796970">+61 428796970</a></li><li><a href="mailto:info@skyev.com.au">info@skyev.com.au</a></li><li>4 Chiltern Rd Ingleside, NSW 2101</li></ul></div>' +
         '<div><h5>Legal Links</h5><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Cookie Policy</a></li></ul></div>' +
         '</div><div class="copy">SKY® is a registered trademark of SKYEV PTY LTD.<br>© 2026 SKYEV PTY LTD. All rights reserved.</div></div></footer>';
