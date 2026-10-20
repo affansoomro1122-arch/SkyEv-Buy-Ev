@@ -270,7 +270,7 @@
       return '<div class="list-item"><img src="' + E(p.images[0] || '') + '" alt=""><div><b>' + E(p.name) +
         (top.indexOf(p.id) > -1 ? '<span class="badge">On home page</span>' : '') + '</b><small>' + SKY.money(p.price) + ' · ' +
         new Date(p.createdAt).toLocaleDateString('en-AU') + '</small></div><div class="rowbtns">' +
-        '<a class="xbtn" style="padding:6px 10px;display:inline-block" href="product.html?id=' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">View</a>' +
+        '<a class="xbtn" style="padding:6px 10px;display:inline-block" href="product?id=' + encodeURIComponent(p.id) + '" target="_blank" rel="noopener">View</a>' +
         '<button class="xbtn" data-edit="' + E(p.id) + '">Edit</button><button class="xbtn del" data-del="' + E(p.id) + '">Delete</button></div></div>';
     }).join('') : '<p class="empty">No products yet.</p>';
   }
