@@ -311,7 +311,7 @@
       esc(img) +
       '" alt="' +
       esc(p.name) +
-      '"><span class="img-tag">BUY EV TRUCK PTY. LTD</span></a>' +
+      '"><span class="img-tag"><img style="width: 100px;" src="' +
       '<div class="body"><h3><a href="' +
       url(p) +
       '">' +
