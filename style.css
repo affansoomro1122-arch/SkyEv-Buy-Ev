@@ -1216,5 +1216,7 @@ table.specs td:first-child {
 }.logo img {
   height: 80px;
 }
-  
+  .btn{
+    padding: 11px 6px;
+  }
 }
