@@ -116,6 +116,7 @@
     <script src="app.js"></script>
     <script>
       (function () {
+        var LOGO = "/images/logo.png";
         var E = SKY.esc,
           view = document.getElementById("view");
         SKY.load().then(function (all) {
@@ -221,7 +222,9 @@
                 E(m.src) +
                 '" alt="' +
                 E(p.name) +
-                '"><span class="img-tag">BUY EV TRUCK PTY. LTD</span>';
+                '"><span class="img-tag"><img style="width: 100px;" src="' +
+                LOGO +
+                '" alt="SKY"></span>';
             else if (m.pv.kind === "youtube")
               gm.innerHTML =
                 '<iframe src="https://www.youtube-nocookie.com/embed/' +
