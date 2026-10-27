@@ -312,6 +312,8 @@
       '" alt="' +
       esc(p.name) +
       '"><span class="img-tag"><img style="width: 100px;" src="' +
+        LOGO +
+        '" alt="SKY"></span></a>' +
       '<div class="body"><h3><a href="' +
       url(p) +
       '">' +
