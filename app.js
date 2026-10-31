@@ -5,7 +5,7 @@
   var WHATSAPP = "61428796970"; // <- WhatsApp number, digits only with country code
   var CDN = "https://dao000pg6obv7.cloudfront.net/wp-content/uploads";
   var LOGO = "/images/logo.png";
-  var LOGO_VIDEO = "/images/newLogo.webm";
+  var LOGO_VIDEO = "/images/newLogo_no_white_background.apng";
 
   /* DEFAULT product – shown only while the database is still empty/new, or if the server can't be reached */
   var SEED = [
@@ -354,9 +354,7 @@
     if (h) {
       h.outerHTML =
         '<header class="solid"><div class="hwrap">' +
-        '<a href="/" class="logoGrid"><video loop autoplay muted playsinline><source src="' +
-        LOGO_VIDEO +
-        '"></video></a>' +
+        '<a href="/" class="logoGrid"><img src="' + LOGO_VIDEO + '" alt="Buy EV Truck" style="width: 90px; height: auto;"></a>' +
         '<a class="logo" href="/"><img src="' +
         LOGO +
         '" alt="SKY"></a>' +
