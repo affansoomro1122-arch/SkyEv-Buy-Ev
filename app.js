@@ -354,7 +354,7 @@
     if (h) {
       h.outerHTML =
         '<header class="solid"><div class="hwrap">' +
-        '<a href="/" class="logoGrid"><img src="' + LOGO_VIDEO + '" alt="Buy EV Truck" style="width: 90px; height: auto;"></a>' +
+        // '<a href="/" class="logoGrid"><img src="' + LOGO_VIDEO + '" alt="Buy EV Truck" style="width: 90px; height: auto;"></a>' +
         '<a class="logo" href="/"><img src="' +
         LOGO +
         '" alt="SKY"></a>' +
