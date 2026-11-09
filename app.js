@@ -12,7 +12,7 @@
     {
       id: "4-5-electric-pantech",
       name: "4.5 Electric Pantech",
-      price: 98000,
+      price: 85000,
       priceNote: "Plus on-road costs",
       booking: 5000,
       createdAt: 1700000000000,
