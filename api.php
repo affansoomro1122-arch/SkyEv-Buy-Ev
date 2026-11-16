@@ -174,7 +174,7 @@ function uploadFile($b) {
     if (!file_exists($dir . '/.htaccess')) {
         @file_put_contents($dir . '/.htaccess', "# uploaded files are only ever served, never executed\n<IfModule mod_authz_core.c>\n  <FilesMatch \"\\.(php|phtml|php[0-9]|phar|pl|py|cgi)$\">\n    Require all denied\n  </FilesMatch>\n</IfModule>\n<IfModule !mod_authz_core.c>\n  <FilesMatch \"\\.(php|phtml|php[0-9]|phar|pl|py|cgi)$\">\n    Order allow,deny\n    Deny from all\n  </FilesMatch>\n</IfModule>\n");
     }
-    if (!file_exists($dir . '/index.html')) @file_put_contents($dir . '/index.html', '');   // stops folder listing without special server settings
+    if (!file_exists($dir . '/')) @file_put_contents($dir . '/', '');   // stops folder listing without special server settings
     $name = bin2hex(random_bytes(12)) . '.' . $types[$type];
     if (@file_put_contents($dir . '/' . $name, $data) === false) out(['ok' => false, 'error' => 'Could not save the file (uploads folder not writable).'], 500);
     // saved WITHOUT the domain name (e.g. /uploads/abc.jpg) so photos and videos keep working if you change domain
