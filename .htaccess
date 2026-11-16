@@ -1,9 +1,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # /index.html -> /
+  # /index.html -> https://buyevtruck.com/
   RewriteCond %{THE_REQUEST} \s/index\.html[\s?] [NC]
-  RewriteRule ^index\.html$ / [R=301,L]
+  RewriteRule ^index\.html$ https://buyevtruck.com/ [R=301,L]
 
   # /about.html -> /about   (also /product.html?id=1 -> /product?id=1)
   RewriteCond %{THE_REQUEST} \s/([^\s?]+)\.html[\s?] [NC]
